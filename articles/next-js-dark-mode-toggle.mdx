@@ -1,0 +1,574 @@
+---
+title: "Adding a dark / light mode toggle to Next.js using CSS variables"
+slug: "next-js-dark-mode-toggle"
+author: "Rob Morieson"
+description: "With consideration for accessibility, prefers-color-scheme settings, persisting preferences and avoiding the dreaded 'flash of death' caused by SSR"
+date: "2021-03-15"
+keywords:
+  - "Next.js"
+  - "React"
+  - "CSS Variables"
+  - "Accessibility"
+image: "https://res.cloudinary.com/electricanimals/image/upload/v1615873845/electricanimals/articles/next-js-dark-mode-toggle/banner.png"
+---
+
+While a dark / light mode toggle may seem simple on the surface, it turns out that dark mode can actually [cause _more_ accessibility issues than it solves](https://levelup.gitconnected.com/why-dark-mode-causes-more-accessibility-issues-than-it-solves-d2f8359bb46a), so it's important that we allow users to toggle between light and dark themes in an accessible manor. Further, if the device / browser supports it, we should strive to display a user's preferred theme on initial load _and_ save their preference should they decide to switch themes. On top of that we need to work around Next.js and the constraints of server side rendering (SSR). As you can see there's a fair bit to unpack, so let's jump in!
+
+> Jump ahead and [view a demo](https://next-dark-mode-toggle.vercel.app/), or take a look at the source code over on [GitHub](https://github.com/robmorieson/next-dark-mode-toggle).
+
+<Spacer amount={3} />
+
+### Initial setup and static elements
+
+We'll start by bootstrapping a new instance of Next.js using the `create-next-app` boilerplate.
+
+```bash
+yarn create next-app
+```
+
+Although we wont be utilising CSS-in-JS for the actual theming (CSS variables are going to handle that) we will leverage [Emotion](https://emotion.sh/) to style our toggle component, so let's add the necessary packages now.
+
+```bash
+yarn add @emotion/styled @emotion/react
+```
+
+> We're using Emotion here as it supports SSR with Next.js right out the box, while Styled Components require additional config. The syntax is identical for our purposes.
+
+<Spacer amount={3} />
+
+`create-next-app` provides a global CSS file which is the perfect location to define our CSS variables for dark and light theming.
+
+```css
+/* styles/globals.css */
+
+body,
+body[data-theme="light"] {
+  --color-text-primary: #27201a;
+  --color-text-secondary: #076963;
+  --color-bg-primary: #fff;
+  --color-bg-toggle: #1e90ff;
+}
+
+body[data-theme="dark"] {
+  --color-text-primary: #e3e3e3;
+  --color-text-secondary: #ff6b00;
+  --color-bg-primary: #15232d;
+  --color-bg-toggle: #a9a9a9;
+}
+```
+
+> As you might guess from the above CSS, we'll be switching themes by applying a `data-theme` attribute to the `<body>` tag, rather than the traditional ThemeProvider approach. Credit to [Kent C. Dodds](https://epicreact.dev/css-variables/) for bringing this technique to my attention 🙏
+
+<Spacer amount={3} />
+
+While we're in `globals.css` let's add some basic styles that use our CSS variables so we can see our theme toggle in action later on.
+
+```css
+/* styles/globals.css */
+
+/* ... */
+
+body {
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: sans-serif;
+  transition: background 0.25s ease-in-out;
+}
+
+h1 {
+  color: var(--color-text-secondary);
+}
+```
+
+<Spacer amount={3} />
+
+`create-next-app` also generates an `index.js` page for us. Let's remove the bootstrapped content and enter some demo content to test our toggle button:
+
+```jsx
+// pages/index.js
+
+import styled from "@emotion/styled";
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 35vh;
+`;
+
+export default function Home() {
+  return (
+    <Container>
+      <main>
+        <h1>Next.js dark mode toggle</h1>
+        <h4>Dark mode is more than just a gimmick, right?!</h4>
+      </main>
+    </Container>
+  );
+}
+```
+
+<Spacer amount={3} />
+
+Time to build out the toggle component itself. We'll create a new file called `ThemeToggle.js` and place it in a `components` directory.
+
+```jsx
+// components/ThemeToggle.js
+
+import styled from "@emotion/styled";
+
+const ToggleButton = styled.button`
+  --toggle-width: 80px;
+  --toggle-height: 38px;
+  --toggle-padding: 4px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 1.5rem;
+  line-height: 1;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
+  padding: var(--toggle-padding);
+  border: 0;
+  border-radius: calc(var(--toggle-width) / 2);
+  cursor: pointer;
+  background: var(--color-bg-toggle);
+  transition: background 0.25s ease-in-out;
+`;
+
+const ToggleThumb = styled.span`
+  position: absolute;
+  top: var(--toggle-padding);
+  left: var(--toggle-padding);
+  width: calc(var(--toggle-height) - (var(--toggle-padding) * 2));
+  height: calc(var(--toggle-height) - (var(--toggle-padding) * 2));
+  border-radius: 50%;
+  background: white;
+`;
+
+const ThemeToggle = () => {
+  return (
+    <ToggleButton type="button">
+      <ToggleThumb />
+      <span>🌙</span>
+      <span>☀️</span>
+    </ToggleButton>
+  );
+};
+
+export default ThemeToggle;
+```
+
+> CSS variables + `calc()` functions here allow us to alter the width / height of the toggle, with all internal elements automatically resizing in proportion 🪄
+
+<Spacer amount={3} />
+
+Import the `ToggleButton` component into the `index` page...
+
+```jsx
+// pages/index.js
+
+import styled from "@emotion/styled";
+import ThemeToggle from "../components/ThemeToggle";
+
+//...
+export default function Home() {
+  return (
+    <Container>
+      <main>
+        <h1>Next.js dark mode toggle</h1>
+        <h4>Dark mode is more than just a gimmick, right?!</h4>
+        <ThemeToggle />
+      </main>
+    </Container>
+  );
+}
+```
+
+<Spacer amount={3} />
+
+...and we should end up with this:
+
+<Image
+  src="/images/articles/next-js-dark-mode-toggle/screenshot-next-dark-mode-toggle.png"
+  alt="Screen shot of Next.js app with dark/light mode toggle"
+  width={1100}
+  height={760}
+/>
+
+<Spacer amount={4} />
+
+### Interactivity - events, state and effects
+
+With the markup and styling out of the way it's time to add the logic. We'll start with React's `useState` hook so we can store and update the _active_ theme.
+
+Assigning the _inactive_ theme to a variable will also come in handy down the track.
+
+```jsx
+// components/ThemeToggle.js
+
+import { useState } from "react";
+
+//...
+
+const ThemeToggle = () => {
+  const [activeTheme, setActiveTheme] = useState("light");
+  const inactiveTheme = activeTheme === "light" ? "dark" : "light";
+  //...
+};
+```
+
+> Notice the default theme is set to "light" - we'll expand on this later to include consideration for a user's `prefers-color-scheme` settings, along with some smarts for persisting preferences on refresh using `localStorage`
+
+<Spacer amount={3} />
+
+Let's also add an `onClick` event to the toggle button that updates our state accordingly.
+
+```jsx
+// components/ThemeToggle.js
+
+//...
+
+<ToggleButton
+	type="button"
+	onClick={() => setActiveTheme(inactiveTheme)}
+>
+```
+
+<Spacer amount={3} />
+
+Next we'll leverage React's `useEffect` hook to set the `data-theme` attribute on the `<body>` tag. Adding `[activeTheme]` as a dependency means it will run anytime the active theme changes.
+
+```jsx
+// components/ThemeToggle.js
+
+import { useState, useEffect } from "react";
+
+//...
+
+const ThemeToggle = () => {
+	// ...
+  useEffect(() => {
+    document.body.dataset.theme = activeTheme;
+  }, [activeTheme]);
+```
+
+<Spacer amount={3} />
+
+Finally, we need to pass `activeTheme` as a prop to `ToggleThumb` so we can style the component to match the active theme.
+
+We'll also add a transition so the button animates when toggled.
+
+```jsx
+// components/ThemeToggle.js
+
+//...
+
+const ToggleThumb = styled.span`
+  //...
+  transition: transform 0.25s ease-in-out;
+  transform: ${(p) =>
+    p.activeTheme === "dark"
+      ? "translate3d(calc(var(--toggle-width) - var(--toggle-height)), 0, 0)"
+      : "none"};
+`;
+
+//...
+
+<ToggleButton type="button" onClick={() => setActiveTheme(inactiveTheme)}>
+  <ToggleThumb activeTheme={activeTheme} />
+  <span>🌙</span>
+  <span>☀️</span>
+</ToggleButton>;
+```
+
+<Spacer amount={3} />
+
+Ok, we should now have a basic working dark / light mode toggle button!
+
+<Video
+  src="https://res.cloudinary.com/electricanimals/video/upload/v1616041211/electricanimals/articles/next-js-dark-mode-toggle/step-1"
+  alt="Screen recording of our Next.js app with a basic working version of the dark / light mode toggle button"
+/>
+
+<Spacer amount={4} />
+
+### Accessibility considerations
+
+Currently if we focus on our button using a screen reader, there's nothing to indicate its intended functionality. In fact, based on the emoji we've used, VoiceOver on MacOS simply dictates "sun, crescent shaped moon, button" - not a great user experience, to say the least! Let's add some aria-labels to improve upon this.
+
+```jsx
+// components/ThemeToggle.js
+
+//...
+
+<ToggleButton
+  aria-label={`Change to ${inactiveTheme} mode`}
+  title={`Change to ${inactiveTheme} mode`}
+  type="button"
+  onClick={() => setActiveTheme(inactiveTheme)}
+>
+  <ToggleThumb activeTheme={activeTheme} />
+  <span aria-hidden={true}>☀️</span>
+  <span aria-hidden={true}>🌙</span>
+</ToggleButton>
+```
+
+> Here we've added an `aria-label` that describes what action the button will perform; the `title` attribute provides a tooltip when users hover the button; `aria-hidden="true"` ensures screen readers will ignore the emoji ✅
+
+<Spacer amount={3} />
+
+Testing with an actual screen reader is preferable, although we can also inspect the `<button>` element in Chrome's dev tools to ensure the correct details will be dictated via screen readers.
+
+<Spacer amount={3} />
+
+<Image
+  src="/images/articles/next-js-dark-mode-toggle/screenshot-dev-tools-1.jpg"
+  alt="Screenshot of the accessibility tab in Chrome's dev tools, displaying the button's name as emojis"
+  width={590}
+  height={385}
+  caption="Guessing what action our initial button performs is like a question on that weird Emogenius game show"
+/>
+
+<Spacer amount={3} />
+
+<Image
+  src="/images/articles/next-js-dark-mode-toggle/screenshot-dev-tools-2.jpg"
+  alt="Screenshot of the accessibility tab in Chrome's dev tools, displaying the button's name as emojis"
+  width={590}
+  height={306}
+  caption="Aria-labels to the rescue!"
+/>
+
+<Spacer amount={3} />
+
+> For more on accessible icon buttons take a look at Sara Soueidan's [comprehensive article](https://www.sarasoueidan.com/blog/accessible-icon-buttons/) on the subject
+
+<Spacer amount={3} />
+
+Building on our accessibility considerations, let's add styles for `focus` and `hover` states.
+
+```jsx
+// components/ThemeToggle.js
+
+//...
+
+const ToggleButton = styled.button`
+  ...
+  transition: background 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+  &:focus {
+    outline-offset: 5px;
+  }
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+  &:hover {
+    box-shadow: 0 0 5px 2px var(--color-bg-toggle);
+  },
+`;
+```
+
+> The new `:focus-visible` pseudo-class allows us to remove focus for non-keyboard focus events - e.g. clicking the button with a mouse.
+
+<Spacer amount={4} />
+
+### Persisting theme preferences
+
+If you select 'dark' mode then hit refresh, you'll notice that the website reverts to 'light' mode. This is an easy fix thanks to the `localStorage` property.
+
+```jsx
+// components/ThemeToggle.js
+
+//...
+
+const ThemeToggler = () => {
+
+	//...
+
+	useEffect(() => {
+    const savedTheme = window.localStorage.getItem("theme");
+    savedTheme && setActiveTheme(savedTheme);
+  }, []);
+
+  useEffect(() => {
+    document.body.dataset.theme = activeTheme;
+    window.localStorage.setItem("theme", activeTheme);
+  }, [activeTheme]);
+
+```
+
+<Spacer amount={3} />
+
+Above we've added a new `useEffect` hook that only runs on mount / unmount to check if a local storage item exists with the name 'theme'. If it does, then we set the active theme accordingly. We also update local storage any time the user toggles themes.
+
+This is great, but if you switch to 'dark' mode and hit refresh, you might notice that we get a flash of the 'light' theme before the `useEffect` kicks in. Essential this is due to Next's 'hydration' process, which you can read more about at [nextjs.org](https://nextjs.org/docs/basic-features/pages#pre-rendering).
+
+Luckily Josh W. Comeau penned a _very_ extensive guide on dealing with this 'flash of death' [over on his blog](https://www.joshwcomeau.com/react/dark-mode/). Our solution will be somewhat more straightforward as we're utilising CSS variables and data attributes on the `<body>` tag to provide theme values, but there are still a few steps involved, so no judgement if you want to call it job done at this point. Ok, maybe some judgement... this doesn't look great:
+
+<Video
+  src="https://res.cloudinary.com/electricanimals/video/upload/v1616370818/electricanimals/articles/next-js-dark-mode-toggle/flash-of-death-1"
+  alt="Screen recording of our Next.js app demonstrating the flash of 'light' content when refreshing"
+  caption="Hitting refresh gives a quick flash of the 'light' theme before my saved theme of 'dark' is picked up"
+/>
+
+<Spacer amount={4} />
+
+### Colour scheme preferences and tackling the dreaded flash
+
+If you're in for the long haul, then let's start by adding a custom `_document.js` file to Next.js so we can inject a `<script>` tag into the `<body>`. This will allow us to set the theme before Next has a chance to 'hydrate' the markup.
+
+```jsx
+// pages/_document.js
+
+import Document, { Html, Head, Main, NextScript } from "next/document";
+
+class MyDocument extends Document {
+  static async getInitialProps(ctx) {
+    const initialProps = await Document.getInitialProps(ctx);
+    return { ...initialProps };
+  }
+
+  render() {
+    return (
+      <Html>
+        <Head />
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
+}
+
+export default MyDocument;
+```
+
+> Your local server requires restarting before Next will recognise the custom 'document'.
+> Check the [Next.js docs](https://nextjs.org/docs/advanced-features/custom-document) to read more about customising the 'document' page
+
+<Spacer amount={3} />
+
+Now we'll add some vanilla JavaScript that:
+
+1. Checks to see if a user has already selected a theme by interacting with the toggle
+
+2. If not, then we'll check if their browser / device has a preferred colour scheme set
+
+3. Failing either of these checks we will default to 'light' mode
+
+4. Finally, we save the result of the above to the `data-theme` attribute on the `<body>` tag
+
+<Spacer amount={3} />
+
+```jsx
+// pages/_document.js
+
+//...
+
+render() {
+  const setInitialTheme = `
+    function getUserPreference() {
+      if(window.localStorage.getItem('theme')) {
+        return window.localStorage.getItem('theme')
+      }
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+				? 'dark'
+				: 'light'
+    }
+    document.body.dataset.theme = getUserPreference();
+  `;
+  return (
+    <Html>
+      <Head />
+      <body>
+        <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  );
+}
+```
+
+> To protect against XSS attacks, React DOM escapes any raw JavaScript before rendering. We are therefore required to embed our JavaScript using the `dangerouslySetInnerHTML` attribute. In this instance it is safe as _we_ have full control over the JavaScript being injected.
+
+<Spacer amount={3} />
+
+Now that we're setting the `data-theme` attribute as a first order of call, we can go back to our `ToggleTheme` component and refactor how it retrieves its default value.
+
+We no longer require the initial `useEffect`; instead we can now simply initialise our `activeTheme` state with the value of the `data-theme` attribute.
+
+```jsx
+// components/ThemeToggle.js
+
+//...
+
+const ThemeToggle = () => {
+  const [activeTheme, setActiveTheme] = useState(document.body.dataset.theme);
+  const inactiveTheme = activeTheme === "light" ? "dark" : "light";
+
+	useEffect(() => {
+    document.body.dataset.theme = activeTheme;
+    window.localStorage.setItem("theme", activeTheme);
+  }, [activeTheme]);
+
+  //...
+```
+
+<Spacer amount={3} />
+
+If you jumped ahead and tried this out, you would have been rewarded with a big fat error!
+
+<Image
+  src="/images/articles/next-js-dark-mode-toggle/screenshot-document-error.png"
+  alt="Screenshot of Reference Error: document is not defined in Next.js"
+  width="1001"
+  height="469"
+  caption="Next attempts to access 'document' on the server which causes an error"
+/>
+
+<Spacer amount={3} />
+
+This is because Next is attempting to render the `ToggleTheme` component on the server, which has no reference to `document` - it's only available to the browser.
+
+Thankfully Next have considered this and allows certain components to be dynamically imported at the browser-level, without SSR.
+
+Let's update the way we import our `ThemeToggle` component into our `index.js` page to the 'dynamic' method, with `ssr` set to `false`.
+
+```jsx
+// pages/index.js
+
+import dynamic from "next/dynamic";
+import styled from "@emotion/styled";
+
+const ThemeToggle = dynamic(() => import("../components/ThemeToggle"), {
+  ssr: false,
+});
+```
+
+<Spacer amount={3} />
+
+That's it! We now have a dark mode toggle that adheres to accessibility best practices, persists on reload and takes a user's preferred colour scheme into consideration. It also doesn't suffer from the dreaded 'flash' of incorrect colours on initial load.
+
+Bonus: as we're importing the `ThemeToggle` component dynamically it won't appear if a user has JavaScript turned off, which makes sense as it would be rendered useless without JS. However, due to the beauty of CSS variables, users will still see the fallback 'light' colour scheme, even without JavaScript running - winning! 🏆
+
+<Image
+  src="/images/articles/next-js-dark-mode-toggle/screenshot-no-js.png"
+  alt="Screenshot of our Next.js app with JavaScript disabled"
+  width="1154"
+  height="745"
+  caption="Even without JavaScript we still get our default 'light' theme"
+/>
+
+<Spacer amount={3} />
+
+You can find the complete code example over on my [GitHub](https://github.com/robmorieson/next-dark-mode-toggle), along with a [demo version](https://next-dark-mode-toggle.vercel.app/) of the app running on Vercel.
+
+Hit me on [Twitter](https://twitter.com/robmorieson) with any questions, comments or suggestions.
+
+<Spacer amount={3} />
+
+Thanks for joining and I'll catch you on the next one! ✌️
+
+<Spacer amount={4} />

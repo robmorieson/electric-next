@@ -1,0 +1,33 @@
+{
+  "name": "electricanimals.com",
+  "description": "Rob Morieson's personal website",
+  "author": "Rob Morieson <rob@electricanimals.com>",
+  "repository": "https://github.com/robmorieson/electricanimals.com/",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "date-fns": "^2.19.0",
+    "emotion-theming": "^10.0.27",
+    "gray-matter": "^4.0.2",
+    "gsap": "^3.6.0",
+    "next": "10.0.9",
+    "next-mdx-remote": "^2.1.3",
+    "prism-react-renderer": "^1.2.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-intersection-observer": "^8.31.0",
+    "rebass": "^4.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.35",
+    "@types/react": "^17.0.3",
+    "@types/rebass": "^4.0.8",
+    "typescript": "^4.2.3"
+  }
+}
