@@ -85,7 +85,7 @@ const Footer = () => {
             }}
           >
             <li>
-              <TextLink href="mailto:rob@electricanimals.com">Email</TextLink>
+              <TextLink href="https://github.com/robmorieson">GitHub</TextLink>
             </li>
             <li>
               <TextLink href="https://www.linkedin.com/in/rob-morieson-25612238/">
