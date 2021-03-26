@@ -4,6 +4,7 @@ import Head from "next/head";
 import { Box, BoxProps } from "rebass";
 
 import theme from "styles/theme";
+import SkipToContent from "components/global/SkipToContent";
 import Header from "components/global/Header";
 import Footer from "components/global/Footer";
 
@@ -13,8 +14,9 @@ export const Layout: React.FC = ({ children }) => {
       <Head>
         <link rel="icon" href="/favicon.png" />
       </Head>
+      <SkipToContent />
       <Header />
-      {children}
+      <main id="main">{children}</main>
       <Footer />
     </ThemeProvider>
   );
