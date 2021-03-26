@@ -67,7 +67,7 @@ export default function PostPage({ source, frontMatter }: Props) {
         <meta name="twitter:description" content={frontMatter.description} />
         <meta name="twitter:image" content={frontMatter.image} />
       </Head>
-      <ContentWide as="main" sx={{ mt: "100px", mb: "160px" }}>
+      <ContentWide sx={{ pt: "100px", pb: "160px" }}>
         <article itemScope itemType="https://schema.org/Article">
           <Box
             as="header"
