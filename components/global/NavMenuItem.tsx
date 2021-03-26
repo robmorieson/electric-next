@@ -24,6 +24,9 @@ const NavMenuItem = ({ navOpen, setNavOpen, navItem }: Props) => (
           "opacity .5s ease-in-out .35s, transform .5s ease-in-out .35s",
         opacity: navOpen ? 1 : 0,
         transform: navOpen ? "translate3d(0, 0, 0)" : "translate3d(-50%, 0, 0)",
+        a: {
+          display: navOpen ? "inline-block" : "none",
+        },
       },
     }}
   >
