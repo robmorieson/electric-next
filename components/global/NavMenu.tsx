@@ -25,6 +25,7 @@ const NavMenu = ({ navOpen, setNavOpen }: Props) => {
           justifyContent: "center",
           background: "var(--color-bg-primary)",
           transition: "opacity .5s ease-in-out",
+          visibility: navOpen ? "visible" : "hidden",
           opacity: navOpen ? 1 : 0,
           transform: navOpen
             ? "translate3d(0, 0, 0)"
