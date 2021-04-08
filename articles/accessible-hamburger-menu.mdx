@@ -1,0 +1,36 @@
+---
+title: "Building an accessible 'hamburger menu' navigation"
+author: "Rob Morieson"
+description: "This pervasive UI pattern often falls short in terms of keyboard accessibility"
+date: "2021-04-08"
+keywords:
+  - "Accessibility"
+image: "https://res.cloudinary.com/electricanimals/image/upload/v1617782091/electricanimals/articles/accessible-hamburger-menus/banner.png"
+---
+
+Regardless of where you stand on the 'hamburger menu' style of navigation, its ubiquitous presence on the vast majority of websites makes implementing one a seemingly inevitable task for front end engineers these days. Putting aside our love/hate for the 'burger', let's look at how we can implement one with accessibility front and centre.
+
+Building out the core functionality is mostly trivial - navigation items are hidden off-screen, often using the `translate()` CSS function, then revealed on the click of a button (that just happens to look like a hamburger 🍔😋). What we're interested in here is achieving this seemingly simple functionality in an accessible manner. In doing so we'll be ensuring that:
+
+- Tab focus isn't 'lost' on elements that are visually hidden
+- Tab focus is locked to the nav items when navigation is visible
+- Screen readers are presented with the correct HTML elements
+- ARIA attributes are employed only where necessary
+
+<Spacer amount={3} />
+
+### Standard implementation
+
+Let’s start by looking at a stock standard implementation of a hamburger menu and examine where we can improve upon it.
+
+> Although this tutorial uses React as the working example, the principles covered here apply to any framework, including good old plain JavaScript
+
+<Spacer amount={3} />
+
+Hit me on [Twitter](https://twitter.com/robmorieson) with any questions, comments or suggestions.
+
+<Spacer amount={3} />
+
+Thanks for joining and I'll catch you on the next one! ✌️
+
+<Spacer amount={4} />
