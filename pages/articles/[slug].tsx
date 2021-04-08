@@ -42,9 +42,10 @@ type Source = {
 type Props = {
   source: Source;
   frontMatter: ArticleType;
+  slug: string;
 };
 
-export default function PostPage({ source, frontMatter }: Props) {
+export default function PostPage({ source, frontMatter, slug }: Props) {
   const content = hydrate(source, { components });
   return (
     <Layout>
@@ -54,7 +55,7 @@ export default function PostPage({ source, frontMatter }: Props) {
         <meta name="image" content={frontMatter.image} />
         <meta
           property="og:url"
-          content={`https://electricanimals.com/articles/${frontMatter.slug}`}
+          content={`https://electricanimals.com/articles/${slug}`}
         />
         <meta property="og:type" content="article" />
         <meta property="og:title" content={frontMatter.title} />
@@ -136,6 +137,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       source: mdxSource,
       frontMatter: data,
+      slug: params?.slug,
     },
   };
 };
