@@ -78,4 +78,22 @@ export const BodyText = {
       {children}
     </Text>
   ),
+  UL: ({ sx = {}, children, ...props }: TextProps) => (
+    <Text
+      as="ul"
+      sx={{
+        listStyle: "disc",
+        fontSize: ["1.15rem", "1.25rem"],
+        mb: "var(--s3)",
+        pl: "var(--s2)",
+        "li:not(:last-child)": {
+          pb: "var(--s1)",
+        },
+        ...sx,
+      }}
+      {...props}
+    >
+      {children}
+    </Text>
+  ),
 };

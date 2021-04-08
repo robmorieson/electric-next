@@ -25,6 +25,7 @@ const components = {
   a: TextLink,
   h3: ArticleText.H3,
   p: BodyText.P,
+  ul: BodyText.UL,
   code: CodeBlock,
   inlineCode: BodyText.CODE,
   blockquote: Callout,
