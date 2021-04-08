@@ -72,7 +72,7 @@ const Articles = ({ articles }: Props) => {
                   </Box>
                 </Flex>
                 <HeadingText.H3 mb="var(--s1)">
-                  <TextLink href="/articles/next-js-dark-mode-toggle">
+                  <TextLink href={`articles/${article.slug}`}>
                     {article.title}
                   </TextLink>
                 </HeadingText.H3>

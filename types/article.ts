@@ -1,6 +1,6 @@
 type ArticleType = {
   title: string;
-  slug: string;
+  slug?: string;
   author: string;
   description: string;
   date: string;

@@ -47,6 +47,8 @@ export function getStaticProps() {
       const { data } = matter(source);
       return {
         ...data,
+        date: data.date,
+        slug: filePath.replace(/\.mdx?$/, ""),
       };
     })
     .sort((a, b) => (new Date(b.date) as any) - (new Date(a.date) as any));
