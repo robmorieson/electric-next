@@ -10,6 +10,16 @@ type Experience = {
 
 const experiences: Experience[] = [
   {
+    date: "May 2021 - Current",
+    role: "Senior Frontend Developer",
+    company: {
+      name: "MYER",
+      url: "https://www.myer.com.au/",
+    },
+    summary:
+      "As a senior member in a cross-functional team, this role encompasses a broad range of tasks, from delivery of website features, through to assisting in discovery and solution design, mentoring developers, uplifting internal tooling / documentation and running knowledge sharing sessions with the frontend team.",
+  },
+  {
     date: "Jun 2019 - Oct 2020",
     role: "Lead Developer",
     company: {
