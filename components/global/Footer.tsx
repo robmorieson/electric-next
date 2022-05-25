@@ -108,7 +108,7 @@ const Footer = () => {
             className="footer-fade-in"
             sx={{ display: "block", mb: "var(--s3)" }}
           >
-            Copyright © 2021 Rob Morieson | Electric Animals
+            Copyright © 2022 Rob Morieson | Electric Animals
           </Box>
         </ContentNarrow>
       </Box>

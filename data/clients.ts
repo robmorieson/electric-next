@@ -11,6 +11,16 @@ type Client = {
 
 const clients: Client[] = [
   {
+    name: "MYER",
+    projects: [
+      {
+        text: "MYER.com.au",
+        url: "https://www.myer.com.au/",
+        technologies: "Next.js, Redux, MUI, React Testing Library, Storybook",
+      },
+    ],
+  },
+  {
     name: "RMIT University",
     projects: [
       {

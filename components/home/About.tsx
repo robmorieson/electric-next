@@ -6,6 +6,7 @@ import { Flex } from "rebass";
 import { ContentNarrow } from "components/global/Wrappers";
 import AnchorLink from "components/global/AnchorLink";
 import { HeadingText, BodyText } from "components/global/TextStyles";
+import TextLink, { LinkType } from "components/global/TextLink";
 
 const About = () => {
   const { ref, inView } = useInView({
@@ -70,10 +71,16 @@ const About = () => {
             GraphQL, Apollo, serverless, testing and headless CMS solutions.
           </BodyText.P>
           <BodyText.P className="about-fade-in">
-            Outside of web development I am passionate about music, only
-            recently wrapping up a 7 year stint as a radio presenter on Triple
-            R, while cycling keeps me active as I work towards my goal of riding
-            13,000k in 2021.
+            Outside of web development I am passionate about music and cycling.
+            My days as a DJ and radio host might now be done and dusted, but you
+            can follow along with my other two wheeled adventures over on{" "}
+            <TextLink
+              variation={LinkType.BODY}
+              href="https://www.strava.com/athletes/32518448"
+            >
+              Strava
+            </TextLink>
+            .
           </BodyText.P>
           <AnchorLink
             className="about-fade-in"
