@@ -1,5 +1,5 @@
 import React from "react";
-import { ThemeProvider } from "emotion-theming";
+import { ThemeProvider } from "@emotion/react";
 import Head from "next/head";
 import { Box, BoxProps } from "rebass";
 
@@ -8,7 +8,11 @@ import SkipToContent from "components/global/SkipToContent";
 import Header from "components/global/Header";
 import Footer from "components/global/Footer";
 
-export const Layout: React.FC = ({ children }) => {
+type Props = {
+  children?: React.ReactNode;
+};
+
+export const Layout = ({ children }: Props) => {
   return (
     <ThemeProvider theme={theme}>
       <Head>
