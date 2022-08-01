@@ -10,8 +10,6 @@ import { Layout } from "components/global/Wrappers";
 import Intro from "components/home/Intro";
 import Articles from "components/home/Articles";
 import About from "components/home/About";
-import Projects from "components/home/Projects";
-import Experience from "components/home/Experience";
 import Contact from "components/home/Contact";
 
 type Props = {
@@ -31,8 +29,6 @@ const Home = ({ articles }: Props) => {
       <Intro />
       <Articles articles={articles} />
       <About />
-      <Projects />
-      <Experience />
       <Contact />
     </Layout>
   );
