@@ -54,7 +54,6 @@ body {
   background: var(--color-bg-primary);
   color: var(--color-text-primary);
   line-height: 1.5;
-  transition: background 0.5s ease-in-out;
 }
 
 * {
