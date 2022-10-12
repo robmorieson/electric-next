@@ -24,8 +24,9 @@ const Intro = () => {
             mb: ["var(--s3)", 0],
           }}
         >
-          Hi, I'm Rob Morieson, a web developer based in Melbourne, Australia,
-          with a passion for learning, teaching and mentoring. <br />
+          Hi, I'm Rob Morieson, a frontend developer based in Melbourne,
+          Australia, focusing on accessibility, performance and outstanding UX.{" "}
+          <br />
           <br />I am committed to creating online experiences that are
           accessible by everyone.
         </Text>

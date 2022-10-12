@@ -20,7 +20,7 @@ const Logo = () => {
             alignItems: "center",
           }}
         >
-          Rob Morieson
+          Electric Animals
         </RebassLink>
       </Link>
     </Box>

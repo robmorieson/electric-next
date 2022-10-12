@@ -36,7 +36,7 @@ const TextLink = ({
   ...props
 }: Props) => (
   <>
-    {href.includes("http") || href.includes("mailto") ? (
+    {href.includes("http") ? (
       <RebassLink
         href={href}
         rel="noopener noreferrer"
