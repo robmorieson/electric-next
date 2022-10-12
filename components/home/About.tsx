@@ -60,12 +60,16 @@ const About = () => {
             complement to my technical abilities.
           </BodyText.P>
           <BodyText.P className="about-fade-in">
-            Leading and mentoring developers has also played an integral role in
-            my career and it's something I approach with passion and joy.
+            Teaching and mentoring developers has also played an integral role
+            in my career and it's something I approach with passion and joy.
           </BodyText.P>
           <BodyText.P className="about-fade-in">
-            Current technical interests include React, TypeScript, Prisma,
-            GraphQL, Apollo, serverless, testing and headless CMS solutions.
+            My current focus is on web performance, and as a member of the team
+            at{" "}
+            <TextLink variation={LinkType.BODY} href="https://calibreapp.com/">
+              Calibre
+            </TextLink>{" "}
+            it's something I get to work on every day!
           </BodyText.P>
           <BodyText.P className="about-fade-in">
             Outside of web development I am passionate about music and cycling.
