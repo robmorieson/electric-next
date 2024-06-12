@@ -1,6 +1,6 @@
 # electricanimals.com
 
-Source code for my personal website [electricanimals.com](https://electricanimals.com/), built using [Next.js](https://nextjs.org/).
+Source code for a previous version of my personal website, built using [Next.js](https://nextjs.org/).
 
 To run locally, `yarn`, then `yarn dev`.
 
